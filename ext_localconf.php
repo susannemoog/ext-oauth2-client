@@ -60,7 +60,7 @@ if (file_exists(__DIR__ . '/Resources/Private/PHP/autoload.php')) {
     $GLOBALS['TYPO3_CONF_VARS']['EXTCONF']['backend']['loginProviders'][\Waldhacker\Oauth2Client\Backend\LoginProvider\Oauth2LoginProvider::PROVIDER_ID] = [
         'provider' => \Waldhacker\Oauth2Client\Backend\LoginProvider\Oauth2LoginProvider::class,
         'sorting' => 25,
-        'icon-class' => 'fa-key',
+        'iconIdentifier' => 'actions-key',
         'label' => 'LLL:EXT:oauth2_client/Resources/Private/Language/locallang_be.xlf:login.link',
     ];
 
