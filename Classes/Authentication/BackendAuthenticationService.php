@@ -205,12 +205,15 @@ class BackendAuthenticationService
 
     private function buildCallbackUri(string $providerId): string
     {
+        $now = (string)time();
         return (string)$this->uriBuilder->buildUriFromRoute('login', [
             'loginProvider' => Oauth2LoginProvider::PROVIDER_ID,
             'oauth2-provider' => $providerId,
             // TYPO3\CMS\Core\Authentication\BackendUserAuthentication->formfield_status
             'login_status' => 'login',
-            'commandLI' => 'attempt'
+            'commandLI' => 'attempt',
+            'time' => $now,
+            'hmac' => GeneralUtility::hmac($now, BackendAuthenticationService::class),
         ], UriBuilder::ABSOLUTE_URL);
     }
 

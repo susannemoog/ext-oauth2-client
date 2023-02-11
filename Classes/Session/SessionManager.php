@@ -36,6 +36,7 @@ use Waldhacker\Oauth2Client\Session\v10\UserSessionManager as UserSessionManager
 class SessionManager
 {
     use CookieHeaderTrait;
+    use \TYPO3\CMS\Core\Security\JwtTrait;
 
     public const SESSION_NAME_STATE = 'oauth2-state';
     public const SESSION_NAME_ORIGINAL_REQUEST = 'oauth2-original-registration-request-data';
@@ -120,6 +121,7 @@ class SessionManager
         $sitePath = GeneralUtility::getIndpEnv('TYPO3_SITE_PATH');
         $cookiePath = $cookieDomain ? '/' : (is_string($sitePath) ? $sitePath : '/');
 
+
         $cookie = new Cookie(
             $cookieName,
             $sessionId,
@@ -195,6 +197,14 @@ class SessionManager
         $isSecure = $cookieSameSite === Cookie::SAMESITE_NONE || (bool)GeneralUtility::getIndpEnv('TYPO3_SSL');
         $httpOnly = true;
         $raw = false;
+
+        $sessionId = self::encodeHashSignedJwt(
+            [
+                'identifier' => $sessionId,
+                'time' => (new \DateTimeImmutable())->format(\DateTimeImmutable::RFC3339),
+            ],
+            self::createSigningKeyFromEncryptionKey(UserSession::class)
+        );
 
         return new Cookie(
             $cookieName,
